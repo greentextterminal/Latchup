@@ -38,7 +38,7 @@ module Solution (
       payload_ready = 1'b0;
       payload_valid = 1'b0;
     end
-    if else (i_valid) begin
+    else if (i_valid) begin
       a = i_payload_a;
       b = i_payload_b;
       payload_ready = 1'b0;
