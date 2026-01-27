@@ -31,7 +31,7 @@ module Solution (
   assign o_payload = product;
   assign o_valid = payload_valid;
 
-  always @ (posedge clk or posedge rst) begin
+  always @ (posedge clk or posedge reset) begin
     if (reset) begin
       a = 32'b0;
       b = 32'b0;
@@ -48,6 +48,7 @@ module Solution (
       product = a * b;
       payload_ready = 1'b1;
       payload_valid = 1'b1;
-    end 
+    end
+  end
     
 endmodule
