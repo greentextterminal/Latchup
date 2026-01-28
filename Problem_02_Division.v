@@ -65,16 +65,11 @@ module Solution (
       quotient <= 32'b0;
       computation_valid <= 1'b0;
     end
-    else if () begin // handling the division by 0 case
-      quotient  <= 32'b1;
-      remainder <= 32'b1;
-      computation_valid <= 1'b1;
-    end
     else if (i_valid && i_ready) begin
       // handling the division by 0 case
-      if (i_payload_divisor == 0) begin 
-        quotient  <= 32'b1;
-        remainder <= 32'b1;
+      if (!|i_payload_divisor) begin 
+        quotient  <= {32{1'b1}};
+        remainder <= {32{1'b1}};
         computation_valid <= 1'b1; // assert the values are ready
       end
       else begin
