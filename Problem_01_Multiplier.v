@@ -26,10 +26,10 @@ Example: For 4-bit inputs a=5 (0101) and b=3 (0011), the output should be 15 (00
 |            clk------------>              |
 |          reset------------>              |
 |        i_valid------------>              |
-|    i_payload_a------------>              |
-|    i_payload_b------------>              |
+|    i_payload_a-----/16---->              |
+|    i_payload_b-----/16---->              |
 |              <------------i_ready        |
-|              <------------o_payload      |
+|              <-----/32----o_payload      |
 |              <------------o_valid        |
 |______________|            |______________|
 
