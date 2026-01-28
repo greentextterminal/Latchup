@@ -45,14 +45,15 @@ module Solution (
   input wire i_valid,
   input wire [32-1:0] i_payload_dividend,
   input wire [32-1:0] i_payload_divisor,
-  output wire [32-1:0] o_payload_1,
-  output wire [32-1:0] o_payload_2,
+  output wire [32-1:0] o_payload_1, // quotient
+  output wire [32-1:0] o_payload_2, // remainder
   output wire o_valid
 );
 
 // Define your design here
-  reg [31:0] quotient;  // o_payload
-  reg product_valid;   // o_valid and inversion is i_ready
+  reg [31:0] quotient;  // o_payload_1
+  reg [31:0] remainder; // o_payload_2
+  reg quotient_valid;   // o_valid and inversion is i_ready
 
   assign o_payload = quotient;
   assign o_valid = quotient_valid; // while the output is valid, we are not ready to accept new data
@@ -64,7 +65,8 @@ module Solution (
       quotient_valid <= 1'b0;
     end
     else if (i_valid && i_ready) begin
-      quotient <= i_payload_a * i_payload_b; // compute the division
+      quotient  <= i_payload_dividend / i_payload_divisor; // compute the division
+      remainder <= i_payload_dividend % i_payload_divisor; // compute the remainder
       quotient_valid <= 1'b1;                // assert the product is ready
     end
     else if (quotient_valid) begin
