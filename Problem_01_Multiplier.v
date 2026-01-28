@@ -23,32 +23,49 @@ module Solution (
 );
   
 // Define your design here
-  reg [15:0] a, b;
-  reg [31:0] product;
-  reg product_valid, accept_new_data;
+  reg [31:0] product;  // o_payload
+  reg product_valid;   // o_valid
+  reg accept_new_data; // i_ready
 
   assign o_payload = product;
-  assign o_valid = payload_valid;
+  assign o_valid = product_valid;
   assign i_ready = accept_new_data;
 
   always @ (posedge clk or posedge reset) begin
     if (reset) begin
-      a <= 16'b0;
-      b <= 16'b0;
       product <= 32'b0;
-      payload_valid <= 1'b0;
+      product_valid <= 1'b0;
       accept_new_data <= 1'b1;
     end
     else if (i_valid && i_ready) begin
-      product <= i_payload_a * i_payload_b;
-      product_valid <= 1'b1;
-      accept_new_data <= 1'b0;
+      product <= i_payload_a * i_payload_b; // compute the multiplication
+      product_valid <= 1'b1;                // assert the product is ready
+      accept_new_data <= 1'b0;              // decline new data 
     end
     else begin
-      accept_new_data <= 1'b0;
-      product_valid <= 1'b0;
-      product <= 32'b0;
+      accept_new_data <= 1'b1; // reassert i_ready
+      product_valid <= 1'b0;   // outside of the multiplication cycle, reset flag to 0
+      product <= product;      // hold previous value
     end
   end
     
 endmodule
+
+
+/*
+
+external device            FPGA
+ _______________            _______________         
+|              |            |              |
+|            clk------------>              |
+|          reset------------>              |
+|        i_valid------------>              |
+|    i_payload_a------------>              |
+|    i_payload_b------------>              |
+|              <------------i_ready        |
+|              <------------o_payload      |
+|              <------------o_valid        |
+|______________|            |______________|
+
+       
+*/ 
