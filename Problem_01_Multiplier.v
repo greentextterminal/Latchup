@@ -25,29 +25,29 @@ module Solution (
 // Define your design here
   reg [15:0] a, b;
   reg [31:0] product;
-  reg payload_ready, payload_valid;
+  reg product_valid, accept_new_data;
 
-  assign i_ready = payload_ready;
   assign o_payload = product;
   assign o_valid = payload_valid;
+  assign i_ready = accept_new_data;
 
   always @ (posedge clk or posedge reset) begin
     if (reset) begin
-      a = 32'b0;
-      b = 32'b0;
-      payload_ready = 1'b0;
-      payload_valid = 1'b0;
+      a <= 16'b0;
+      b <= 16'b0;
+      product <= 32'b0;
+      payload_valid <= 1'b0;
+      accept_new_data <= 1'b1;
     end
-    else if (i_valid) begin
-      a = i_payload_a;
-      b = i_payload_b;
-      payload_ready = 1'b0;
-      payload_valid = 1'b0;
+    else if (i_valid && i_ready) begin
+      product <= i_payload_a * i_payload_b;
+      product_valid <= 1'b1;
+      accept_new_data <= 1'b0;
     end
     else begin
-      product = a * b;
-      payload_ready = 1'b1;
-      payload_valid = 1'b1;
+      accept_new_data <= 1'b0;
+      product_valid <= 1'b0;
+      product <= 32'b0;
     end
   end
     
