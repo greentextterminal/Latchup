@@ -51,9 +51,9 @@ module Solution (
 );
 
 // Define your design here
-  reg [31:0] quotient;  // o_payload_1
-  reg [31:0] remainder; // o_payload_2
-  reg computation_valid;   // o_valid and inversion is i_ready
+  reg [31:0] quotient;   // o_payload_1
+  reg [31:0] remainder;  // o_payload_2
+  reg computation_valid; // o_valid and inversion is i_ready
 
   assign o_payload_1 = quotient;
   assign o_payload_2 = remainder;
@@ -65,10 +65,23 @@ module Solution (
       quotient <= 32'b0;
       computation_valid <= 1'b0;
     end
+    else if () begin // handling the division by 0 case
+      quotient  <= 32'b1;
+      remainder <= 32'b1;
+      computation_valid <= 1'b1;
+    end
     else if (i_valid && i_ready) begin
-      quotient  <= i_payload_dividend / i_payload_divisor; // compute the division
-      remainder <= i_payload_dividend % i_payload_divisor; // compute the remainder
-      computation_valid <= 1'b1;                           // assert the computations are ready
+      // handling the division by 0 case
+      if (i_payload_divisor == 0) begin 
+        quotient  <= 32'b1;
+        remainder <= 32'b1;
+        computation_valid <= 1'b1; // assert the values are ready
+      end
+      else begin
+        quotient  <= i_payload_dividend / i_payload_divisor; // compute the division
+        remainder <= i_payload_dividend % i_payload_divisor; // compute the remainder
+        computation_valid <= 1'b1;                           // assert the computations are ready
+      end
     end
     else if (computation_valid) begin
       computation_valid <= 1'b0;   // hold valid for 1 cycle, then clear
