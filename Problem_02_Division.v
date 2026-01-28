@@ -53,24 +53,24 @@ module Solution (
 // Define your design here
   reg [31:0] quotient;  // o_payload_1
   reg [31:0] remainder; // o_payload_2
-  reg quotient_valid;   // o_valid and inversion is i_ready
+  reg computation_valid;   // o_valid and inversion is i_ready
 
   assign o_payload = quotient;
-  assign o_valid = quotient_valid; // while the output is valid, we are not ready to accept new data
-  assign i_ready = !quotient_valid; // not ready to accept new data until output side has naturally 
+  assign o_valid = computation_valid; // while the output is valid, we are not ready to accept new data
+  assign i_ready = !computation_valid; // not ready to accept new data until output side has naturally 
 
   always @ (posedge clk or posedge reset) begin
     if (reset) begin
       quotient <= 32'b0;
-      quotient_valid <= 1'b0;
+      computation_valid <= 1'b0;
     end
     else if (i_valid && i_ready) begin
       quotient  <= i_payload_dividend / i_payload_divisor; // compute the division
       remainder <= i_payload_dividend % i_payload_divisor; // compute the remainder
-      quotient_valid <= 1'b1;                // assert the product is ready
+      computation_valid <= 1'b1;                           // assert the computations are ready
     end
-    else if (quotient_valid) begin
-      quotient_valid <= 1'b0;   // hold valid for 1 cycle, then clear
+    else if (computation_valid) begin
+      computation_valid <= 1'b0;   // hold valid for 1 cycle, then clear
     end
   end
 
