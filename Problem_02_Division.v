@@ -55,7 +55,8 @@ module Solution (
   reg [31:0] remainder; // o_payload_2
   reg computation_valid;   // o_valid and inversion is i_ready
 
-  assign o_payload = quotient;
+  assign o_payload_1 = quotient;
+  assign o_payload_2 = remainder;
   assign o_valid = computation_valid; // while the output is valid, we are not ready to accept new data
   assign i_ready = !computation_valid; // not ready to accept new data until output side has naturally 
 
