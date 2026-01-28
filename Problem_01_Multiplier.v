@@ -20,7 +20,7 @@ Example: For 4-bit inputs a=5 (0101) and b=3 (0011), the output should be 15 (00
 
 /*
 
-external device            FPGA
+ external device                  FPGA
  _______________            _______________         
 |              |            |              |
 |            clk------------>              |
@@ -64,9 +64,8 @@ module Solution (
       product <= i_payload_a * i_payload_b; // compute the multiplication
       product_valid <= 1'b1;                // assert the product is ready
     end
-    else begin
-      product_valid <= 1'b0;   // outside of the multiplication cycle(s), reset flag to 0
-      product <= product;      // hold previous value
+    else if (product_valid) begin
+      product_valid <= 1'b0;   // hold valid for 1 cycle, then clear
     end
   end
     
